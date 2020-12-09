@@ -1,4 +1,3 @@
-
 void Main()
 {
 	var text = File.ReadAllText(@"2020_12_04.txt");
