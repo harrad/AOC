@@ -43,7 +43,7 @@ class SeatCounter
 		return '?';
 	}
 
-	public void Update2(int maxSeat, bool skipFloor)
+	public void Update(int maxSeat, bool skipFloor)
 	{
 		var adjacent = new[] { (0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (1, -1), (-1, 1), (1, 1) };
 		var hasChanged = false;
@@ -73,7 +73,7 @@ class SeatCounter
 	public int GetStableAnswer(int maxSeat, bool skipFloor)
 	{
 		ResetData();
-		while (!_isStable) Update2(maxSeat, skipFloor);
+		while (!_isStable) Update(maxSeat, skipFloor);
 		return _data.Count(x => x == '#');
 	}
 }
