@@ -9,12 +9,12 @@ void Main()
 
 public static double DegToRad(int angle) => (Math.PI / 180) * angle;
 
-public int Question1(IEnumerable<(string letter, int value)> text, int dir)
+public int Question1(IEnumerable<(string letter, int value)> data, int dir)
 {
 	var v = 0;
 	var h = 0;
 
-	foreach (var i in text)
+	foreach (var i in data)
 	{
 		if ((i.letter == "F" && dir == 0) || i.letter == "N") v += i.value;
 		if ((i.letter == "F" && dir == 1) || i.letter == "E") h -= i.value;
@@ -31,12 +31,12 @@ public int Question1(IEnumerable<(string letter, int value)> text, int dir)
 	return Math.Abs(h) + Math.Abs(v);
 }
 
-public int Question2(IEnumerable<(string letter, int value)> text, int wpx, int wpy)
+public int Question2(IEnumerable<(string letter, int value)> data, int wpx, int wpy)
 {
 	var v = 0;
 	var h = 0;
 
-	foreach (var i in text)
+	foreach (var i in data)
 	{
 		if (i.letter == "N") wpy += i.value;
 		if (i.letter == "E") wpx += i.value;
