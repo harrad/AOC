@@ -1,91 +1,67 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AdventOfCode
+void Main()
 {
-    class Program
-    {
-        public static double DegToRad(int angle) => (Math.PI / 180) * angle;
+	var text = File.ReadAllLines(@"2020_12_12.txt");
+	var data = text.Select(x => (x.Substring(0, 1), int.Parse(x.Substring(1))));
 
-        static void Main()
-        {
-            var text = File.ReadAllLines(@"2020_12_12.txt");
-
-            Question1(text);
-            Question2(text);
-
-            Console.ReadKey();
-        }
-
-        private static void Question2(string[] text)
-        {
-            var v = 0;
-            var h = 0;
-
-            var wpx = 10;
-            var wpy = 1;
-
-            foreach (var i in text)
-            {
-                var l = i.Substring(0, 1);
-                var n = int.Parse(i.Substring(1));
-
-                if (l == "N") wpy += n;
-                if (l == "E") wpx += n;
-                if (l == "S") wpy -= n;
-                if (l == "W") wpx -= n;
-
-                if (l == "R" || l == "L")
-                {
-                    n = l == "R" ? -n : n;
-                    var rad = DegToRad(n);
-                    var c = (int)Math.Cos(rad);
-                    var s = (int)Math.Sin(rad);
-                    var x = wpx * c - wpy * s;
-                    var y = wpx * s + wpy * c;
-
-                    wpx = x;
-                    wpy = y;
-                }
-
-                if (l == "F")
-                {
-                    h += wpx * n;
-                    v += wpy * n;
-                }
-            }
-
-            Console.WriteLine(Math.Abs(h) + Math.Abs(v));
-        }
-
-        private static void Question1(string[] text)
-        {
-            var v = 0;
-            var h = 0;
-            var dir = 1;
-
-            foreach (var i in text)
-            {
-                var l = i.Substring(0, 1);
-                var n = int.Parse(i.Substring(1));
-
-                if ((l == "F" && dir == 0) || l == "N") v += n;
-                if ((l == "F" && dir == 1) || l == "E") h -= n;
-                if ((l == "F" && dir == 2) || l == "S") v -= n;
-                if ((l == "F" && dir == 3) || l == "W") h += n;
-
-                if (l == "R" || l == "L")
-                {
-                    n = l == "R" ? n : -n;
-                    dir = (dir + (n / 90) + 4) % 4;
-                }
-            }
-
-            Console.WriteLine(Math.Abs(h) + Math.Abs(v));
-        }
-    }
+	Question1(data, 1).Dump();
+	Question2(data, 10, 1).Dump();
 }
+
+public static double DegToRad(int angle) => (Math.PI / 180) * angle;
+
+public int Question1(IEnumerable<(string letter, int value)> text, int dir)
+{
+	var v = 0;
+	var h = 0;
+
+	foreach (var i in text)
+	{
+		if ((i.letter == "F" && dir == 0) || i.letter == "N") v += i.value;
+		if ((i.letter == "F" && dir == 1) || i.letter == "E") h -= i.value;
+		if ((i.letter == "F" && dir == 2) || i.letter == "S") v -= i.value;
+		if ((i.letter == "F" && dir == 3) || i.letter == "W") h += i.value;
+
+		if (i.letter == "R" || i.letter == "L")
+		{
+			var n = i.letter == "L" ? -i.value : i.value;
+			dir = (dir + (n / 90) + 4) % 4;
+		}
+	}
+
+	return Math.Abs(h) + Math.Abs(v);
+}
+
+public int Question2(IEnumerable<(string letter, int value)> text, int wpx, int wpy)
+{
+	var v = 0;
+	var h = 0;
+
+	foreach (var i in text)
+	{
+		if (i.letter == "N") wpy += i.value;
+		if (i.letter == "E") wpx += i.value;
+		if (i.letter == "S") wpy -= i.value;
+		if (i.letter == "W") wpx -= i.value;
+
+		if (i.letter == "R" || i.letter == "L")
+		{
+			var n = i.letter == "R" ? -i.value : i.value;
+			var c = (int) Math.Cos(DegToRad(n));
+			var s = (int) Math.Sin(DegToRad(n));
+			var x = wpx * c - wpy * s;
+			var y = wpx * s + wpy * c;
+
+			wpx = x;
+			wpy = y;
+		}
+
+		if (i.letter == "F")
+		{
+			h += wpx * i.value;
+			v += wpy * i.value;
+		}
+	}
+
+	return (Math.Abs(h) + Math.Abs(v));
+}
+
